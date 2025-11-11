@@ -82,20 +82,22 @@ async function login(e) {
 
         const res = await axios.post('http://localhost:5000/api/login',
 
-            { email, password }
-
-        )
+            { email, password },
+            
+        );
 
         const data = res.data;
         console.log(res);
 
-        res.cookie('username', 'JohnDoe', { maxAge: 900000, httpOnly: true });
-
         if (data.status === 200) {
 
             alert(data.message);
-            // window.location.href = 'login.html';
+            window.location.href = 'admin.html';
             return;
+        }
+        else {
+
+            alert("Not Found!!!")
         }
 
 
@@ -115,14 +117,13 @@ async function home(e) {
         e.preventDefault();
 
 
-        const res = await axios.get('http://localhost:5000/api/home',
+        const response = await axios.get('http://localhost:5000/api/home',
 
-            let username = req.cookies.username
+            { withCredentials: true } // cookie ke liye zaroori
 
-        )
+        );
 
-        const data = res.data;
-        console.log(res);
+        console.log(response.data.user);
 
 
     } catch (err) {

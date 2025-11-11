@@ -93,11 +93,13 @@ async function login(req, res, next) {
                     { expiresIn: "1d" }
                 )
 
-                res.cookie('jwtToken', token, {
-
+                res.cookie("jwtToken", token, {
+                    
                     httpOnly: true,
-                    maxAge: 900000
+                    maxAge: 24 * 60 * 60 * 1000, // 1 day
+                    sameSite: "Lax"
                 });
+
 
                 return res.send({
 
@@ -127,9 +129,7 @@ async function login(req, res, next) {
 
 async function home(req, res) {
 
-    console.log(res.email);
-
-    const { user } = req;
+    const user = req.user;
     console.log(user);
 
 
