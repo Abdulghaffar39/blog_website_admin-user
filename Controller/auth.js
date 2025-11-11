@@ -1,5 +1,7 @@
+const jwt = require("jsonwebtoken");
 const schemaPoint = require("../DB/dbSchema");
-
+const hashy = require('hashy');
+const saltRounds = 10;
 
 async function signUp(req, res) {
     try {
@@ -19,23 +21,34 @@ async function signUp(req, res) {
         }
 
 
-        const user = {
+        hashy.hash(password, function (error, hash) {
 
-            firstName,
-            lastName,
-            email,
-            password,
-            role,
-        };
+            if (error) {
+                return console.log(error);
+            }
 
-        const result = new schemaPoint(user).save();
+            const user = {
 
-        res.send({
+                firstName,
+                lastName,
+                email,
+                password: hash,
+                role,
+            };
 
-            result,
-            status: 200,
-            message: "signup successfully",
+            const result = new schemaPoint(user).save();
+
+            res.send({
+
+                result,
+                status: 200,
+                message: "signup successfully",
+                user
+            });
+
+
         });
+
 
 
     } catch (err) {
@@ -51,4 +64,103 @@ async function signUp(req, res) {
 }
 
 
-module.exports = { signUp }
+async function login(req, res, next) {
+
+    try {
+
+        const { email, password } = req.body;
+        const user = await schemaPoint.findOne({ email })
+
+        hashy.verify(password, user.password, function (error, success) {
+
+            if (error) {
+
+                return console.error(err);
+            }
+
+            if (success) {
+
+                console.log(process.env.JWTSECRETKEY, "process.env.JWTSECRETKEY");
+
+                let token = jwt.sign(
+                    {
+                        email: user.email,
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        role: user.role,
+                    },
+                    process.env.JWTSECRETKEY,
+                    { expiresIn: "1d" }
+                )
+
+                res.cookie('jwtToken', token, {
+
+                    httpOnly: true,
+                    maxAge: 900000
+                });
+
+                return res.send({
+
+                    token,
+                    status: 200,
+                    message: "user successfully login!!!",
+                })
+
+            } else {
+
+                console.warn("invalid password!");
+            }
+
+        });
+
+
+    }
+    catch (err) {
+        res.send({
+            message: 'user not found',
+            err,
+            status: 404,
+        })
+    }
+};
+
+
+async function home(req, res) {
+
+    console.log(res.email);
+
+    const { user } = req;
+    console.log(user);
+
+
+    try {
+
+        if (user.role === "admin") {
+
+            res.send({
+                status: 200,
+                message: "Welcome Admin",
+            });
+
+        }
+
+        res.send({
+
+            status: 200,
+            message: "Welcome user",
+
+        });
+
+    } catch (err) {
+
+        res.send({
+
+            err,
+            status: 500,
+            message: "sorry! server is not responding",
+        });
+
+    }
+}
+
+module.exports = { signUp, login, home }

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="./assets/images/Gemini_Generated_Image_hk5et3hk5et3hk5e.png">
+    <title>Admin / User</title>
+
+    <link rel="stylesheet" href="./style.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="parent_1" id="loginSide">
+
+            <h1>Login</h1>
+
+            <button onclick="SignUp_page()">Sign Up</button>
+
+        </div>
+
+        <form onsubmit="login()" autocomplete="false">
+
+
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Enter your email" autocomplete="new-email">
+
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter your password" autocomplete="new-password">
+
+
+            <input type="submit" class="submit">
+
+        </form>
+
+    </div>
+
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>
