@@ -114,14 +114,9 @@ async function home(e) {
 
     try {
 
-        e.preventDefault();
 
 
-        const response = await axios.get('http://localhost:5000/api/home',
-
-            { withCredentials: true } // cookie ke liye zaroori
-
-        );
+        const response = await axios.get('http://localhost:5000/api/home');
 
         console.log(response.data.user);
 

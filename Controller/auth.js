@@ -93,13 +93,6 @@ async function login(req, res, next) {
                     { expiresIn: "1d" }
                 )
 
-                res.cookie("jwtToken", token, {
-                    
-                    httpOnly: true,
-                    maxAge: 24 * 60 * 60 * 1000, // 1 day
-                    sameSite: "Lax"
-                });
-
 
                 return res.send({
 
