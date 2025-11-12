@@ -64,47 +64,60 @@ async function signup(e) {
 
 async function login(e) {
 
+    e.preventDefault();
+
+    let email = document.getElementById("email").value
+    let password = document.getElementById("password").value
+
+
+    if (email === "" || password === "") {
+
+        alert('Please fill all fields!');
+        return;
+    }
+
+
     try {
-
-        e.preventDefault();
-
-        let email = document.getElementById("email").value
-        let password = document.getElementById("password").value
-
-
-        if (email === "" || password === "") {
-
-            alert('Please fill all fields!');
-            return;
-        }
-
-
 
         const res = await axios.post('http://localhost:5000/api/login',
 
             { email, password },
-            
+            { withCredentials: true }
         );
+        
+        alert(res.data.message);  // success
+        
+        window.location.href = "admin.html";
 
-        const data = res.data;
-        console.log(res);
+        // if (user.role === "admin") {
 
-        if (data.status === 200) {
+        //     return res.send({
+        //         status: 200,
+        //         message: "Welcome Admin",
+        //     });
 
-            alert(data.message);
-            window.location.href = 'admin.html';
-            return;
-        }
-        else {
+        // } else if (user.role === "user") {
 
-            alert("Not Found!!!")
-        }
+        //     return res.send({
 
+        //         status: 200,
+        //         message: "Welcome user",
+
+        //     });
+        // }
 
     } catch (err) {
 
+        if (err.response) {
+            // backend responded with non-2xx
+            alert(`Error: ${err.response.data.message}`);
+        } else if (err.request) {
+            // request made but no response
+            alert("⚠️ No response from server. Possible CORS or network issue.");
+        } else {
+            alert("⚠️ Axios Error: " + err.message);
+        }
         console.error(err);
-        alert('⚠️ Server error or connection issue.');
     }
 
 }
@@ -129,6 +142,12 @@ async function home(e) {
 
 }
 
+
+function admin(e) {
+
+    e.preventDefault();
+
+}
 
 function login_page() {
 

@@ -64,18 +64,30 @@ async function signUp(req, res) {
 }
 
 
-async function login(req, res, next) {
+async function login(req, res) {
 
     try {
 
         const { email, password } = req.body;
         const user = await schemaPoint.findOne({ email })
 
+        if (!user) {
+
+            return res.status(404).send({
+
+                message: "User not found",
+            });
+        }
+
         hashy.verify(password, user.password, function (error, success) {
 
             if (error) {
 
-                return console.error(err);
+                console.error(error);
+
+                return res.status(500).send({
+                    message: "Error verifying password",
+                });
             }
 
             if (success) {
@@ -94,12 +106,13 @@ async function login(req, res, next) {
                 )
 
                 res.cookie("jwtToken", token, {
-                    
                     httpOnly: true,
-                    maxAge: "1d", // 1 day in milliseconds
+                    maxAge: 24 * 60 * 60 * 1000, // 1 day
+                    secure: process.env.NODE_ENV === "production", // HTTPS only in prod
+                    sameSite: "lax"
                 });
 
-                return res.send({
+                return res.status(200).send({
 
                     token,
                     status: 200,
@@ -108,7 +121,10 @@ async function login(req, res, next) {
 
             } else {
 
-                console.warn("invalid password!");
+                return res.status(401).send({
+
+                    message: "Invalid password"
+                });
             }
 
         });
@@ -116,39 +132,40 @@ async function login(req, res, next) {
 
     }
     catch (err) {
-        res.send({
-            message: 'user not found',
-            err,
-            status: 404,
-        })
+
+        return res.status(500).send({
+
+            message: "Internal server error",
+            error: err.message,
+        });
     }
 };
 
 
 async function home(req, res) {
 
-    const user = await schemaPoint.findOne({ email })
-    user = req.user;
-    console.log(user);
+    const user = req.user;
+    console.log("User Role:", user.role, user.email);
 
 
     try {
 
         if (user.role === "admin") {
 
-            res.send({
+            return res.send({
                 status: 200,
                 message: "Welcome Admin",
             });
 
+        } else if (user.role === "user") {
+
+            return res.send({
+
+                status: 200,
+                message: "Welcome user",
+
+            });
         }
-
-        res.send({
-
-            status: 200,
-            message: "Welcome user",
-
-        });
 
     } catch (err) {
 

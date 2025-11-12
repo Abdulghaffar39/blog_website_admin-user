@@ -8,8 +8,8 @@ const app = express();
 
 
 app.use(cors({
-    origin: 'http://127.0.0.1:5500', // aapka frontend origin
-    credentials: true // cookies allow karne ke liye zaroori
+  origin: "http://127.0.0.1:5500", // frontend Live Server URL
+  credentials: true
 }));
 
 
