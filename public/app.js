@@ -84,9 +84,10 @@ async function login(e) {
             { email, password },
             { withCredentials: true }
         );
-        
+
         alert(res.data.message);  // success
-        
+
+
         window.location.href = "admin.html";
 
         // if (user.role === "admin") {
@@ -123,30 +124,41 @@ async function login(e) {
 }
 
 
-async function home(e) {
+// async function home(e) {
 
-    try {
-
-
-
-        const response = await axios.get('http://localhost:5000/api/home');
-
-        console.log(response.data.user);
+//     try {
 
 
-    } catch (err) {
 
-        console.error(err);
-        alert('⚠️ Server error or connection issue.');
-    }
+//         const response = await axios.get('http://localhost:5000/api/home');
 
-}
+//         console.log(response.data.user);
 
 
-function admin(e) {
+//     } catch (err) {
+
+//         console.error(err);
+//         alert('⚠️ Server error or connection issue.');
+//     }
+
+// }
+
+
+async function submit(e) {
 
     e.preventDefault();
 
+    const res = await axios.get('http://localhost:5000/api/home',
+
+        // { email, role },
+        { withCredentials: true }
+    );
+    // console.log(email, role);
+    
+    const allCookies = document.cookie;
+    console.log(allCookies.email);
+
+    
 }
 
 function login_page() {
