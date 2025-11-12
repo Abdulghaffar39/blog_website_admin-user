@@ -93,6 +93,11 @@ async function login(req, res, next) {
                     { expiresIn: "1d" }
                 )
 
+                res.cookie("jwtToken", token, {
+                    
+                    httpOnly: true,
+                    maxAge: "1d", // 1 day in milliseconds
+                });
 
                 return res.send({
 
@@ -122,7 +127,8 @@ async function login(req, res, next) {
 
 async function home(req, res) {
 
-    const user = req.user;
+    const user = await schemaPoint.findOne({ email })
+    user = req.user;
     console.log(user);
 
 
