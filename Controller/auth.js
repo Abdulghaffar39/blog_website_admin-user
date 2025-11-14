@@ -106,10 +106,8 @@ async function login(req, res) {
                 )
 
                 res.cookie("jwtToken", token, {
+
                     httpOnly: true,
-                    maxAge: 24 * 60 * 60 * 1000, // 1 day
-                    secure: process.env.NODE_ENV === "production", // HTTPS only in prod
-                    sameSite: "lax"
                 });
 
                 return res.status(200).send({

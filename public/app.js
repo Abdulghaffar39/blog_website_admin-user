@@ -148,17 +148,23 @@ async function submit(e) {
 
     e.preventDefault();
 
-    const res = await axios.get('http://localhost:5000/api/home',
+    const res = await axios.post('http://localhost:5000/api/login', {
 
-        // { email, role },
-        { withCredentials: true }
-    );
-    // console.log(email, role);
+        headers: {
+            'Authorization': `Bearer ${token}`, // For Bearer token authentication
+            'Content-Type': 'application/json' // Or 'application/x-www-form-urlencoded', etc.
+
+        }
+    }
+
+    )
+
+    console.log(token);
     
     const allCookies = document.cookie;
     console.log(allCookies.email);
 
-    
+
 }
 
 function login_page() {
