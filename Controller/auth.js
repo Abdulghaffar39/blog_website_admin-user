@@ -8,7 +8,6 @@ async function signUp(req, res) {
 
         const { firstName, lastName, email, password, role } = req.body;
 
-
         const checkEmail = await schemaPoint.findOne({ email })
         console.log(checkEmail, 'line number 41');
 
@@ -71,6 +70,9 @@ async function login(req, res) {
         const { email, password } = req.body;
         const user = await schemaPoint.findOne({ email })
 
+        // console.log(user.role, user);
+
+
         if (!user) {
 
             return res.status(404).send({
@@ -113,6 +115,7 @@ async function login(req, res) {
                 return res.status(200).send({
 
                     token,
+                    user,
                     status: 200,
                     message: "user successfully login!!!",
                 })
@@ -143,7 +146,7 @@ async function login(req, res) {
 async function home(req, res) {
 
     const user = req.user;
-    console.log("User Role:", user.role, user.email);
+    console.log("Decoded user:", user);
 
 
     try {
@@ -151,6 +154,8 @@ async function home(req, res) {
         if (user.role === "admin") {
 
             return res.send({
+
+                user,
                 status: 200,
                 message: "Welcome Admin",
             });
@@ -159,6 +164,7 @@ async function home(req, res) {
 
             return res.send({
 
+                user,
                 status: 200,
                 message: "Welcome user",
 

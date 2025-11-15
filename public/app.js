@@ -42,6 +42,8 @@ async function signup(e) {
 
         )
 
+
+
         const data = res.data;
         console.log(res);
 
@@ -82,30 +84,28 @@ async function login(e) {
         const res = await axios.post('http://localhost:5000/api/login',
 
             { email, password },
-            { withCredentials: true }
         );
+
+        console.log(res.data.user.role);
+
+        const token = res.data.token;  // JWT from backend
+        localStorage.setItem("token", token);
 
         alert(res.data.message);  // success
 
+        getToken()
 
-        window.location.href = "admin.html";
 
-        // if (user.role === "admin") {
+        // if (res.data.user.role === "user") {
 
-        //     return res.send({
-        //         status: 200,
-        //         message: "Welcome Admin",
-        //     });
-
-        // } else if (user.role === "user") {
-
-        //     return res.send({
-
-        //         status: 200,
-        //         message: "Welcome user",
-
-        //     });
+        //     window.location.href = "user.html";
         // }
+        // else if (res.data.user.role === "admin") {
+
+        //     window.location.href = "admin.html";
+        // }
+
+
 
     } catch (err) {
 
@@ -144,26 +144,34 @@ async function login(e) {
 // }
 
 
+async function getToken() {
+
+    const token = localStorage.getItem("token");
+
+    const res = await axios.get("http://localhost:5000/api/home", {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        }
+    });
+
+    console.log(res.data.user);
+
+    if (res.data.user.role === "user") {
+
+        window.location.href = "user.html";
+    }
+    else if (res.data.user.role === "admin") {
+
+        window.location.href = "admin.html";
+    }
+
+
+
+}
+
 async function submit(e) {
 
     e.preventDefault();
-
-    const res = await axios.post('http://localhost:5000/api/login', {
-
-        headers: {
-            'Authorization': `Bearer ${token}`, // For Bearer token authentication
-            'Content-Type': 'application/json' // Or 'application/x-www-form-urlencoded', etc.
-
-        }
-    }
-
-    )
-
-    console.log(token);
-    
-    const allCookies = document.cookie;
-    console.log(allCookies.email);
-
 
 }
 
